@@ -25,3 +25,6 @@ next-env.d.ts
 # conversation logs
 conversation-*.txt
 .vercel
+
+# Codespaces
+.devcontainer/.env

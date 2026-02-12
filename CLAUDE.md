@@ -160,6 +160,13 @@ npm run build  # 本番ビルド
 npm start      # 本番サーバー起動
 ```
 
+## モバイル開発
+- **GitHub Codespaces対応**: `.devcontainer/devcontainer.json` で設定済み
+- **モバイル完結開発**: スマホ・タブレットだけで開発可能
+- **詳細ガイド**: `MOBILE_DEV.md` 参照
+- **推奨環境**: GitHub Codespaces（月60時間まで無料）
+- **devスクリプト**: `-H 0.0.0.0` でネットワークアクセス対応
+
 ## 実装済み機能
 - ✅ 基本的な馬券計算（全馬券種対応）
 - ✅ BOX/ながし/フォーメーション計算

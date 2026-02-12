@@ -10,6 +10,7 @@ export const BET_TYPES: Record<BetType, {
 }> = {
   '単勝': { name: '単勝', displayName: '単勝', minHorses: 1, maxHorses: 18, positions: 1, description: '1着になる馬を当てる' },
   '複勝': { name: '複勝', displayName: '複勝', minHorses: 1, maxHorses: 18, positions: 1, description: '3着以内に入る馬を当てる' },
+  '応援馬券': { name: '応援馬券', displayName: '応援 (単+複)', minHorses: 1, maxHorses: 18, positions: 1, description: '同じ馬の単勝と複勝をセットで購入（各1点ずつ）' },
   '枠連': { name: '枠連', displayName: '枠連', minHorses: 2, maxHorses: 8, positions: 2, description: '1着・2着の枠番を当てる（順不同）' },
   '馬連': { name: '馬連', displayName: '馬連', minHorses: 2, maxHorses: 18, positions: 2, description: '1着・2着の馬を当てる（順不同）' },
   'ワイド': { name: 'ワイド', displayName: 'ワイド', minHorses: 2, maxHorses: 18, positions: 2, description: '3着以内に入る2頭を当てる（順不同）' },
@@ -27,7 +28,7 @@ export function isTripleBet(betType: BetType): boolean {
 }
 
 export function isSingleBet(betType: BetType): boolean {
-  return betType === '単勝' || betType === '複勝';
+  return betType === '単勝' || betType === '複勝' || betType === '応援馬券';
 }
 
 export function isFrameBet(betType: BetType): boolean {

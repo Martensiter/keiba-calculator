@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
+import { BreadcrumbJsonLd, HowToJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: '馬券の買い方ガイド | 初心者向け競馬馬券入門',
@@ -80,6 +80,16 @@ export default function GuidePage() {
         { name: 'ホーム', url: '/' },
         { name: '馬券の買い方ガイド', url: '/guide' },
       ]} />
+      <HowToJsonLd
+        name="馬券の買い方"
+        description="競馬初心者向けに馬券の種類と買い方を4ステップで解説します"
+        steps={[
+          { name: '馬券の種類を選ぶ', text: '単勝・複勝・馬連・馬単・ワイド・3連複・3連単の中から、自分の予想スタイルに合った馬券種を選びます。' },
+          { name: '購入方法を決める', text: '通常・BOX・ながし・フォーメーションの中から購入方法を選びます。初心者は通常かBOXがおすすめです。' },
+          { name: '馬番を選択する', text: '予想に基づいて馬番を選択します。オッズを参考にしながら、投資額と配当のバランスを考えましょう。' },
+          { name: '点数と金額を確認して購入', text: '計算ツールで点数・合計金額・予想回収率を確認し、予算内であることを確認してから購入します。' },
+        ]}
+      />
 
       <article className="space-y-8">
         <header>
@@ -161,15 +171,60 @@ export default function GuidePage() {
           </div>
         </section>
 
+        {/* JRAオッズの見方 */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-bold text-gray-900 border-b-2 border-green-600 pb-2">JRA公式サイトでオッズを確認する方法</h2>
+          <div className="bg-white rounded-xl shadow-sm border p-5 space-y-4">
+            <p className="text-gray-700">
+              JRA公式サイト（<a href="https://www.jra.go.jp/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline hover:text-blue-800">jra.go.jp</a>）では、
+              レースごとの最新オッズを確認できます。当ツールの「JRAオッズ一括入力」機能を使えば、オッズ表をコピペするだけで取り込み可能です。
+            </p>
+
+            <div className="bg-blue-50 rounded-lg p-4">
+              <p className="font-bold text-blue-800 text-sm mb-2">確認手順</p>
+              <ol className="space-y-2 text-sm text-blue-700">
+                <li className="flex gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                  <span>JRA公式サイトの「オッズ」メニューからレースを選択</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                  <span>確認したい馬券種のタブを選択（馬連・馬単・3連単など）</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                  <span>表示されたオッズ表をドラッグで選択し、コピー（Ctrl+C / ⌘+C）</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                  <span>当ツールの「JRAオッズ一括入力」ボタンから貼り付け</span>
+                </li>
+              </ol>
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-800">
+              <strong>注意:</strong> JRAのオッズは投票締切まで変動します。最終確定オッズはレース発走後に確認できます。
+            </div>
+          </div>
+        </section>
+
         {/* CTA */}
         <div className="text-center bg-green-50 rounded-xl p-6 border border-green-200">
           <p className="text-green-800 font-bold mb-2">早速計算してみましょう</p>
-          <a
-            href="/"
-            className="inline-block bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-700 transition-colors"
-          >
-            計算ツールを使う
-          </a>
+          <div className="flex flex-wrap justify-center gap-3">
+            <a
+              href="/"
+              className="inline-block bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-700 transition-colors"
+            >
+              計算ツールを使う
+            </a>
+            <a
+              href="/beginners"
+              className="inline-block bg-white text-green-700 border border-green-600 px-6 py-3 rounded-xl font-bold hover:bg-green-50 transition-colors"
+            >
+              はじめての方へ
+            </a>
+          </div>
         </div>
       </article>
     </>

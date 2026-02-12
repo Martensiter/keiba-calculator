@@ -52,8 +52,8 @@ function HorseButton({
       className={`
         relative flex flex-col items-center justify-center w-12 h-14 rounded-lg text-xs font-bold transition-all
         ${selected
-          ? 'ring-2 ring-green-500 bg-green-50 shadow-sm'
-          : 'bg-gray-50 hover:bg-gray-100'
+          ? 'ring-2 ring-green-500 bg-green-50 dark:bg-green-950 shadow-sm'
+          : 'bg-gray-50 dark:bg-(--color-surface-elevated) hover:bg-gray-100 dark:hover:bg-gray-700'
         }
       `}
       title={horse?.name || `${num}番`}

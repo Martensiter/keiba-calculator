@@ -12,9 +12,9 @@ export default function Button({ variant = 'primary', size = 'md', className = '
 
   const variants = {
     primary: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400',
+    secondary: 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 focus:ring-gray-400',
     danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-    ghost: 'bg-transparent text-gray-600 hover:bg-gray-100 focus:ring-gray-300',
+    ghost: 'bg-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-gray-300',
   };
 
   const sizes = {

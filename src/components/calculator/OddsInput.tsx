@@ -12,9 +12,6 @@ export default function OddsInput({ selections, onOddsChange }: OddsInputProps) 
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        オッズ入力（任意）
-      </label>
       <div className="max-h-60 overflow-y-auto border rounded-lg">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 sticky top-0">

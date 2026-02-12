@@ -1,5 +1,5 @@
 // 馬券種の定義
-export type BetType = '単勝' | '複勝' | '枠連' | '馬連' | 'ワイド' | '馬単' | '3連複' | '3連単';
+export type BetType = '単勝' | '複勝' | '応援馬券' | '枠連' | '馬連' | 'ワイド' | '馬単' | '3連複' | '3連単';
 
 // 購入方法の定義
 export type PurchaseMethod = '通常' | 'ながし' | 'BOX' | 'フォーメーション';
@@ -50,6 +50,8 @@ export interface BetResult {
   first: number;
   second: number;
   third?: number;
+  firstFrame?: number;   // 1着の枠番（枠連判定用）
+  secondFrame?: number;  // 2着の枠番（枠連判定用）
   refundHorses?: number[];
   dividend?: number;
 }

@@ -38,3 +38,42 @@ export function BreadcrumbJsonLd({ items }: { items: { name: string; url: string
   };
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />;
 }
+
+export function HowToJsonLd({ name, description, steps }: {
+  name: string;
+  description: string;
+  steps: { name: string; text: string }[];
+}) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name,
+    description,
+    step: steps.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+    })),
+  };
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />;
+}
+
+export function ArticleJsonLd({ title, description, datePublished, dateModified }: {
+  title: string;
+  description: string;
+  datePublished: string;
+  dateModified: string;
+}) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished,
+    dateModified,
+    author: { '@type': 'Organization', name: '競馬オッズ計算ツール' },
+    publisher: { '@type': 'Organization', name: '競馬オッズ計算ツール' },
+  };
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />;
+}

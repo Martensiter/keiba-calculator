@@ -32,6 +32,15 @@ export function calculateBoxTickets(
     return { count: n, selections: horses.map(h => ({ horses: [h] })) };
   }
 
+  if (betType === '応援馬券') {
+    // 応援馬券: 1頭につき単勝+複勝の2点
+    const selections = horses.flatMap(h => [
+      { horses: [h], label: '単勝' as string },
+      { horses: [h], label: '複勝' as string },
+    ]);
+    return { count: selections.length, selections: selections.map(s => ({ horses: s.horses })) };
+  }
+
   if (betType === '馬連' || betType === 'ワイド' || betType === '枠連') {
     for (let i = 0; i < n; i++) {
       for (let j = i + 1; j < n; j++) {

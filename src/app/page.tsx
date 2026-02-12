@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { BetType, PurchaseMethod, Horse, BetSelection, BetTicket, FormationSelection, NagashiSelection, IpatHistoryData } from '@/lib/types';
+import { BetType, PurchaseMethod, Horse, BetSelection, BetTicket, FormationSelection, NagashiSelection, IpatHistoryData, BetResult } from '@/lib/types';
 import { isSingleBet } from '@/lib/calculator/betTypes';
 import { calculateBoxTickets, calculateNagashiTickets, calculateFormationTickets } from '@/lib/calculator/combinations';
 import RaceSetup from '@/components/calculator/RaceSetup';
@@ -12,6 +12,7 @@ import OddsInput from '@/components/calculator/OddsInput';
 import ResultPanel from '@/components/calculator/ResultPanel';
 import PurchaseList from '@/components/calculator/PurchaseList';
 import IpatImporter from '@/components/ipat/IpatImporter';
+import JraOddsImporter from '@/components/calculator/JraOddsImporter';
 import { WebApplicationJsonLd, FAQPageJsonLd } from '@/components/seo/JsonLd';
 
 const STORAGE_KEY = 'keiba-calculator-state';
@@ -19,8 +20,11 @@ const STORAGE_KEY = 'keiba-calculator-state';
 const FAQ_DATA = [
   { question: '馬券の点数計算はどのように行いますか？', answer: 'BOXは組み合わせの数（nCr）、ながしは軸馬×相手馬の数、フォーメーションは各着順の選択馬番の組み合わせから重複を除いた数で計算します。' },
   { question: '即PATのデータを取り込むにはどうすればいいですか？', answer: '即PATの画面（オッズ一覧・購入履歴・出馬表）からテキストをコピーし、「即PAT取り込み」ボタンから貼り付けることでデータを自動解析します。' },
+  { question: 'JRA公式サイトからオッズを取り込むには？', answer: 'JRA公式サイトのオッズ一覧をコピーし、「JRAオッズ一括入力」ボタンから貼り付けることで、現在の買い目にオッズを一括反映できます。' },
   { question: '回収率とは何ですか？', answer: '回収率は払戻金÷投資金額×100で計算されます。100%を超えれば利益、下回れば損失です。' },
+  { question: 'マルチとは何ですか？', answer: 'ながし購入時に「マルチ」を選択すると、軸馬と相手馬を入れ替えた組み合わせも自動で追加されます。点数は増えますが、的中の可能性が広がります。' },
   { question: '返還馬があった場合はどうなりますか？', answer: '返還馬を含む買い目は自動で除外され、該当分の金額が返還されます。有効な買い目数と合計金額が再計算されます。' },
+  { question: '競馬初心者ですが使えますか？', answer: 'はい。「はじめての方へ」ページで基本を学び、馬券種選択時の「?」ボタンで各馬券の説明を確認できます。まずは単勝・複勝から始めることをおすすめします。' },
 ];
 
 function generateId(): string {
@@ -38,6 +42,7 @@ export default function CalculatorPage() {
   const [selectedHorses, setSelectedHorses] = useState<number[]>([]);
   const [nagashi, setNagashi] = useState<NagashiSelection>({ axis: [], partner: [], axisPosition: '1着' });
   const [formation, setFormation] = useState<FormationSelection>({ first: [], second: [], third: [] });
+  const [isMulti, setIsMulti] = useState(false); // マルチ（軸・相手入替）
 
   // 計算された買い目
   const [currentSelections, setCurrentSelections] = useState<BetSelection[]>([]);
@@ -66,6 +71,16 @@ export default function CalculatorPage() {
     setNagashi({ axis: [], partner: [], axisPosition: '1着' });
     setFormation({ first: [], second: [], third: [] });
     setCurrentSelections([]);
+    setIsMulti(false);
+  }, []);
+
+  // 選択リセット
+  const handleResetSelection = useCallback(() => {
+    setSelectedHorses([]);
+    setNagashi({ axis: [], partner: [], axisPosition: '1着' });
+    setFormation({ first: [], second: [], third: [] });
+    setCurrentSelections([]);
+    setIsMulti(false);
   }, []);
 
   // 買い目の自動計算
@@ -73,7 +88,14 @@ export default function CalculatorPage() {
     let result: { count: number; selections: BetSelection[] } = { count: 0, selections: [] };
 
     if (purchaseMethod === '通常') {
-      if (isSingleBet(betType)) {
+      if (betType === '応援馬券') {
+        // 応援馬券: 1頭につき単勝+複勝の2点
+        const sels = selectedHorses.flatMap(h => [
+          { horses: [h] },
+          { horses: [h] },
+        ]);
+        result = { count: sels.length, selections: sels };
+      } else if (isSingleBet(betType)) {
         result = { count: selectedHorses.length, selections: selectedHorses.map(h => ({ horses: [h] })) };
       } else {
         // 通常モードでは選択された馬番からの直接入力（ここではBOXと同じ計算をする）
@@ -84,6 +106,25 @@ export default function CalculatorPage() {
     } else if (purchaseMethod === 'ながし') {
       if (nagashi.axis.length > 0 && nagashi.partner.length > 0) {
         result = calculateNagashiTickets(betType, nagashi);
+        // マルチ: 軸と相手を入れ替えた買い目も追加
+        if (isMulti) {
+          const reversed: NagashiSelection = {
+            axis: nagashi.partner,
+            partner: nagashi.axis,
+            axisPosition: nagashi.axisPosition,
+          };
+          const multiResult = calculateNagashiTickets(betType, reversed);
+          // 重複除去して合算
+          const seen = new Set(result.selections.map(s => s.horses.join('-')));
+          for (const sel of multiResult.selections) {
+            const key = sel.horses.join('-');
+            if (!seen.has(key)) {
+              seen.add(key);
+              result.selections.push(sel);
+            }
+          }
+          result.count = result.selections.length;
+        }
       }
     } else if (purchaseMethod === 'フォーメーション') {
       if (formation.first.length > 0 && formation.second.length > 0) {
@@ -92,7 +133,7 @@ export default function CalculatorPage() {
     }
 
     setCurrentSelections(result.selections);
-  }, [betType, purchaseMethod, selectedHorses, nagashi, formation]);
+  }, [betType, purchaseMethod, selectedHorses, nagashi, formation, isMulti]);
 
   // 購入リストに追加
   const addToList = () => {
@@ -111,6 +152,17 @@ export default function CalculatorPage() {
   // 購入リストから削除
   const removeTicket = (id: string) => {
     setTickets(prev => prev.filter(t => t.id !== id));
+  };
+
+  // 結果更新
+  const updateTicketResult = (id: string, result: BetResult, actualPayout: number) => {
+    setTickets(prev =>
+      prev.map(t =>
+        t.id === id
+          ? { ...t, result, actualPayout }
+          : t
+      )
+    );
   };
 
   // 即PATインポートハンドラ
@@ -183,22 +235,20 @@ export default function CalculatorPage() {
       <div className="space-y-6">
         {/* タイトル・説明 */}
         <section>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">競馬オッズ計算ツール</h1>
-          <p className="text-sm text-gray-600">
-            馬券の点数・合計金額・回収率をリアルタイムで計算。BOX・ながし・フォーメーションに対応。即PATからのデータ取り込みも可能です。
+          <h1 className="text-2xl font-bold text-(--color-text-primary) mb-2">競馬オッズ計算ツール</h1>
+          <p className="text-sm text-(--color-text-secondary) mb-2">
+            馬券の点数・合計金額・回収率をリアルタイムで計算。BOX・ながし・フォーメーションに対応。
+            即PATデータ取り込み・JRA公式オッズ転記にも対応しています。
           </p>
+          <div className="flex flex-wrap gap-2 text-xs">
+            <a href="/beginners" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">はじめての方はこちら →</a>
+            <a href="/guide" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">馬券の買い方ガイド →</a>
+          </div>
         </section>
 
-        {/* レース設定 + 即PAT取り込み */}
-        <section className="bg-white rounded-xl shadow-sm border p-4 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold">レース設定</h2>
-            <IpatImporter
-              onOddsImport={handleOddsImport}
-              onHistoryImport={handleHistoryImport}
-              onRaceInfoImport={handleRaceInfoImport}
-            />
-          </div>
+        {/* レース設定 */}
+        <section className="bg-white dark:bg-(--color-surface-card) rounded-xl shadow-sm border border-(--color-border) p-4 space-y-4">
+          <h2 className="text-lg font-bold">レース設定</h2>
           <RaceSetup raceInfo={raceInfo} onChange={setRaceInfo} />
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">出走頭数</label>
@@ -215,13 +265,13 @@ export default function CalculatorPage() {
         </section>
 
         {/* 馬券種・購入方法 */}
-        <section className="bg-white rounded-xl shadow-sm border p-4 space-y-4">
+        <section className="bg-white dark:bg-(--color-surface-card) rounded-xl shadow-sm border border-(--color-border) p-4 space-y-4">
           <BetTypeSelector selected={betType} onChange={handleBetTypeChange} />
           <PurchaseMethodComp betType={betType} selected={purchaseMethod} onChange={handlePurchaseMethodChange} />
         </section>
 
         {/* 馬番選択 */}
-        <section className="bg-white rounded-xl shadow-sm border p-4">
+        <section className="bg-white dark:bg-(--color-surface-card) rounded-xl shadow-sm border border-(--color-border) p-4 space-y-3">
           <HorseSelector
             betType={betType}
             purchaseMethod={purchaseMethod}
@@ -234,11 +284,49 @@ export default function CalculatorPage() {
             formation={formation}
             onFormationChange={setFormation}
           />
+          <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+            <div className="flex items-center gap-3">
+              {/* マルチオプション（ながし時のみ） */}
+              {purchaseMethod === 'ながし' && (
+                <label className="flex items-center gap-1.5 text-sm text-gray-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isMulti}
+                    onChange={e => setIsMulti(e.target.checked)}
+                    className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                  />
+                  <span>マルチ（軸・相手入替）</span>
+                  <span className="text-xs text-gray-400" title="軸と相手を入れ替えた組み合わせも購入">?</span>
+                </label>
+              )}
+            </div>
+            <button
+              onClick={handleResetSelection}
+              className="text-xs text-red-500 hover:text-red-700 px-2 py-1 rounded hover:bg-red-50 transition-colors"
+            >
+              選択をリセット
+            </button>
+          </div>
         </section>
 
         {/* オッズ入力 */}
         {currentSelections.length > 0 && currentSelections.length <= 100 && (
-          <section className="bg-white rounded-xl shadow-sm border p-4">
+          <section className="bg-white dark:bg-(--color-surface-card) rounded-xl shadow-sm border border-(--color-border) p-4">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium text-(--color-text-primary)">オッズ入力</label>
+              <div className="flex items-center gap-2">
+                <IpatImporter
+                  onOddsImport={handleOddsImport}
+                  onHistoryImport={handleHistoryImport}
+                  onRaceInfoImport={handleRaceInfoImport}
+                />
+                <JraOddsImporter
+                  betType={betType}
+                  selections={currentSelections}
+                  onOddsApply={setCurrentSelections}
+                />
+              </div>
+            </div>
             <OddsInput
               selections={currentSelections}
               onOddsChange={(index, odds) => {
@@ -251,9 +339,8 @@ export default function CalculatorPage() {
         )}
 
         {/* 計算結果 */}
-        <section className="bg-white rounded-xl shadow-sm border p-4">
+        <section className="bg-white dark:bg-(--color-surface-card) rounded-xl shadow-sm border border-(--color-border) p-4">
           <ResultPanel
-            betType={betType}
             selections={currentSelections}
             unitAmount={unitAmount}
             onUnitAmountChange={setUnitAmount}
@@ -274,17 +361,22 @@ export default function CalculatorPage() {
 
         {/* 購入リスト */}
         <section>
-          <PurchaseList tickets={tickets} onRemove={removeTicket} onClear={() => setTickets([])} />
+          <PurchaseList
+            tickets={tickets}
+            onRemove={removeTicket}
+            onClear={() => setTickets([])}
+            onUpdateResult={updateTicketResult}
+          />
         </section>
 
         {/* FAQ */}
-        <section className="bg-white rounded-xl shadow-sm border p-6">
+        <section className="bg-white dark:bg-(--color-surface-card) rounded-xl shadow-sm border border-(--color-border) p-6">
           <h2 className="text-lg font-bold mb-4">よくある質問</h2>
           <dl className="space-y-4">
             {FAQ_DATA.map((faq, i) => (
               <div key={i}>
-                <dt className="font-medium text-gray-900">{faq.question}</dt>
-                <dd className="mt-1 text-sm text-gray-600">{faq.answer}</dd>
+                <dt className="font-medium text-(--color-text-primary)">{faq.question}</dt>
+                <dd className="mt-1 text-sm text-(--color-text-secondary)">{faq.answer}</dd>
               </div>
             ))}
           </dl>

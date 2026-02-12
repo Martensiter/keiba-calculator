@@ -37,7 +37,25 @@ export function checkHit(
              horses[0] === result.second ||
              (result.third !== undefined && horses[0] === result.third);
 
-    case '枠連':
+    case '応援馬券':
+      // 応援馬券は単勝と複勝の両方で的中判定（複勝基準で判定）
+      return horses[0] === result.first ||
+             horses[0] === result.second ||
+             (result.third !== undefined && horses[0] === result.third);
+
+    case '枠連': {
+      // 枠連は枠番で判定（枠番情報がある場合）
+      if (result.firstFrame !== undefined && result.secondFrame !== undefined) {
+        const resultFramePair = [result.firstFrame, result.secondFrame].sort((a, b) => a - b);
+        const selPair = [...horses].sort((a, b) => a - b);
+        return selPair[0] === resultFramePair[0] && selPair[1] === resultFramePair[1];
+      }
+      // 枠番情報がない場合は馬番でフォールバック判定
+      const resultPairFrame = [result.first, result.second].sort((a, b) => a - b);
+      const selPairFrame = [...horses].sort((a, b) => a - b);
+      return selPairFrame[0] === resultPairFrame[0] && selPairFrame[1] === resultPairFrame[1];
+    }
+
     case '馬連':
     case 'ワイド': {
       const resultPair = [result.first, result.second].sort((a, b) => a - b);

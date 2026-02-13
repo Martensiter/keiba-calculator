@@ -14,6 +14,8 @@ import PurchaseList from '@/components/calculator/PurchaseList';
 import IpatImporter from '@/components/ipat/IpatImporter';
 import JraOddsImporter from '@/components/calculator/JraOddsImporter';
 import { WebApplicationJsonLd, FAQPageJsonLd } from '@/components/seo/JsonLd';
+import AdBanner from '@/components/ads/AdBanner';
+import { AD_SLOTS } from '@/lib/ads/config';
 
 const STORAGE_KEY = 'keiba-calculator-state';
 
@@ -359,6 +361,9 @@ export default function CalculatorPage() {
           </div>
         )}
 
+        {/* コンテンツ間広告 */}
+        <AdBanner slot={AD_SLOTS.contentRectangle} />
+
         {/* 購入リスト */}
         <section>
           <PurchaseList
@@ -368,6 +373,9 @@ export default function CalculatorPage() {
             onUpdateResult={updateTicketResult}
           />
         </section>
+
+        {/* 記事内広告（FAQ前） */}
+        <AdBanner slot={AD_SLOTS.inArticle} />
 
         {/* FAQ */}
         <section className="bg-white dark:bg-(--color-surface-card) rounded-xl shadow-sm border border-(--color-border) p-6">

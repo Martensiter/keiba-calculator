@@ -33,6 +33,8 @@ src/
 │   ├── twitter-image.tsx         # Twitter Card画像の動的生成
 │   └── globals.css               # グローバルスタイル（テーマCSS変数定義）
 ├── components/
+│   ├── ads/                      # 広告コンポーネント
+│   │   └── AdBanner.tsx          # 広告バナー（AdSense対応・プレースホルダー）
 │   ├── calculator/               # 計算機関連コンポーネント
 │   │   ├── RaceSetup.tsx        # レース設定（会場・レース番号）
 │   │   ├── BetTypeSelector.tsx  # 馬券種選択（インラインヘルプ付き）
@@ -54,6 +56,8 @@ src/
 │       └── ThemeToggle.tsx       # ダークモード切替ボタン
 ├── lib/
 │   ├── types.ts                  # 型定義（全体）
+│   ├── ads/                      # 広告設定
+│   │   └── config.ts             # 広告スロット定義・AdSense設定
 │   ├── calculator/               # 計算ロジック
 │   │   ├── betTypes.ts          # 馬券種の定義・判定
 │   │   ├── combinations.ts      # 組み合わせ計算（BOX/ながし/フォーメーション）
@@ -119,6 +123,19 @@ src/
 - **CSS変数方式**: globals.css でセマンティックカラー変数を定義（`--color-surface`, `--color-text-primary` 等）
 - **ちらつき防止**: `<head>` 内インラインスクリプトでページ描画前にクラスを適用
 - **localStorage永続化**: `keiba-theme` キーで保存
+
+### 9. 広告機能（競馬アフィリエイト直接入稿）
+- **直接入稿方式**: A8.net / バリューコマース / アクセストレード等のHTMLコードをそのまま設定可能
+- **3種類の広告タイプ**:
+  - `html`: アフィリエイトASPのHTMLタグをそのまま貼り付け
+  - `image`: バナー画像URL + リンクURL
+  - `text`: CSS装飾テキスト広告（テーマカラー・CTAボタン・バッジ対応）
+- **広告スロット**: ヘッダー下(header)、コンテンツ間(content)、記事内(in-article)、フッター上(footer)
+- **競馬系サンプル広告**: JRA即PAT、netkeiba.com、競馬ブック、JRA UMACA
+- **ローテーション**: 同じpositionに複数クリエイティブ設定可、priority順で表示
+- **レスポンシブ**: showOnMobile / showOnDesktop フラグ、モバイル用CSSスタイル
+- **ダークモード対応**: CSS変数を活用した自動テーマ切替
+- **入稿方法**: `src/lib/ads/config.ts` の `AD_CREATIVES` 配列にクリエイティブを追加
 
 ## データフロー
 
@@ -201,6 +218,7 @@ npm start      # 本番サーバー起動
 - ✅ 結果入力モーダル強化（枠番入力・枠連的中判定対応）
 - ✅ ダークモード（ライト/ダーク/システム追従、CSS変数方式）
 - ✅ OGP画像動的生成（opengraph-image.tsx / twitter-image.tsx）
+- ✅ 広告機能（Google AdSense対応、環境変数設定方式）
 
 ## TODOリスト / 今後の拡張案
 - [ ] 複数レースの一括管理機能
@@ -221,6 +239,10 @@ npm start      # 本番サーバー起動
 - ダークモードはclass方式（`html.dark`）。Tailwind v4の `@custom-variant dark` で定義
 - テーマのlocalStorageキーは `keiba-theme`（light / dark / system）
 - OGP画像はedge runtimeで動的生成されるため静的エクスポート不可
+- 広告クリエイティブは `src/lib/ads/config.ts` の `AD_CREATIVES` 配列で管理（コードベース直接管理）
+- type: 'html' でアフィリエイトHTMLコードをそのまま dangerouslySetInnerHTML で描画
+- 広告が未設定のスロットは何も表示されない（プレースホルダーなし）
+- テキスト広告のリンクには `rel="noopener noreferrer sponsored"` を自動付与
 
 ## 最近の作業履歴
 - Initial implementation of keiba odds calculator (commit: 5ab7e45)
@@ -238,6 +260,11 @@ npm start      # 本番サーバー起動
 - 機能追加 (2026-02-12 続き2)
   - ダークモード実装（CSS変数方式、ライト/ダーク/システム3モード切替）
   - OGP画像・Twitter Card画像の動的生成（edge runtime）
+- 機能追加 (2026-02-13)
+  - 広告機能実装（競馬アフィリエイト直接入稿方式）
+  - 3種類の広告タイプ: html（ASPコード貼付）、image（バナー画像）、text（CSS装飾テキスト）
+  - 競馬系サンプル広告クリエイティブ4種（JRA即PAT / netkeiba / 競馬ブック / UMACA）
+  - 全ページへの広告スロット配置（ヘッダー下/コンテンツ間/記事内/フッター上）
 
 ## ファイル参照の目安
 - 型定義を確認: `src/lib/types.ts`
@@ -250,3 +277,4 @@ npm start      # 本番サーバー起動
 - OGP画像: `src/app/opengraph-image.tsx`, `src/app/twitter-image.tsx`
 - ダークモード: `src/app/globals.css`（テーマ変数）, `src/components/ui/ThemeToggle.tsx`
 - 初心者向け: `src/app/beginners/page.tsx`, `src/app/guide/page.tsx`
+- 広告: `src/components/ads/AdBanner.tsx`, `src/lib/ads/config.ts`

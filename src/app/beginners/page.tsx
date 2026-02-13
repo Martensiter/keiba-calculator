@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { BreadcrumbJsonLd, HowToJsonLd, ArticleJsonLd } from '@/components/seo/JsonLd';
+import AdBanner from '@/components/ads/AdBanner';
+import { AD_SLOTS } from '@/lib/ads/config';
 
 export const metadata: Metadata = {
   title: 'はじめての方へ | 競馬初心者向けガイド',
@@ -121,6 +123,9 @@ export default function BeginnersPage() {
           </ol>
         </nav>
 
+        {/* 記事内広告（目次後） */}
+        <AdBanner slot={AD_SLOTS.inArticle} className="my-6" />
+
         {/* 各ステップ */}
         {steps.map((step, i) => (
           <section key={i} id={`step-${i + 1}`} className="scroll-mt-20">
@@ -202,6 +207,9 @@ export default function BeginnersPage() {
             </div>
           </section>
         ))}
+
+        {/* コンテンツ間広告 */}
+        <AdBanner slot={AD_SLOTS.contentRectangle} className="my-6" />
 
         {/* 注意事項 */}
         <section className="bg-red-50 border border-red-200 rounded-xl p-5">

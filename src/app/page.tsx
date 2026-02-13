@@ -351,10 +351,8 @@ export default function CalculatorPage() {
           />
         </section>
 
-        {/* コンテンツ間広告（AdSense。スロットID設定時に表示） */}
-        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
-          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-4" />
-        )}
+        {/* コンテンツ間広告（AdSense） */}
+        <AdSlot format="auto" className="my-4" />
 
         {/* 購入リストに追加 */}
         {currentSelections.length > 0 && (
@@ -378,10 +376,8 @@ export default function CalculatorPage() {
           />
         </section>
 
-        {/* 記事内広告（AdSense。スロットID設定時に表示） */}
-        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
-          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-4" />
-        )}
+        {/* 記事内広告（AdSense） */}
+        <AdSlot format="auto" className="my-4" />
 
         {/* FAQ */}
         <section className="bg-white dark:bg-(--color-surface-card) rounded-xl shadow-sm border border-(--color-border) p-6">

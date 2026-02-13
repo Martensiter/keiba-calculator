@@ -131,7 +131,7 @@ export default function GuidePage() {
         </section>
 
         {/* 記事内広告（馬券種解説後） */}
-        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-4" />}
+        <AdSlot format="auto" className="my-4" />
 
         {/* 購入方法の解説 */}
         <section className="space-y-4">
@@ -176,7 +176,7 @@ export default function GuidePage() {
         </section>
 
         {/* コンテンツ間広告 */}
-        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-4" />}
+        <AdSlot format="auto" className="my-4" />
 
         {/* JRAオッズの見方 */}
         <section className="space-y-4">

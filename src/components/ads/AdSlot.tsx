@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-3594496442498529';
+const ADSENSE_SLOT = process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID || '1488341751';
 const ADSENSE_ENABLED = !!ADSENSE_CLIENT;
 
 type AdFormat = 'auto' | 'rectangle' | 'horizontal' | 'vertical' | 'fluid';
@@ -27,7 +28,7 @@ interface AdSlotProps {
  */
 export function AdSlot({ slotId, format = 'auto', className = '', label = '広告' }: AdSlotProps) {
   const insRef = useRef<HTMLModElement>(null);
-  const slot = slotId || process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID;
+  const slot = slotId || ADSENSE_SLOT;
 
   useEffect(() => {
     if (!ADSENSE_ENABLED || !slot || !insRef.current) return;
@@ -39,7 +40,6 @@ export function AdSlot({ slotId, format = 'auto', className = '', label = '広�
   }, [slot]);
 
   if (!ADSENSE_ENABLED) return null;
-  if (!slot) return null;
 
   return (
     <section
@@ -48,12 +48,12 @@ export function AdSlot({ slotId, format = 'auto', className = '', label = '広�
     >
       <ins
         ref={insRef}
-        className="adsbygoogle block"
+        className="adsbygoogle"
+        style={{ display: 'block' }}
         data-ad-client={ADSENSE_CLIENT}
         data-ad-slot={slot}
         data-ad-format={format}
         data-full-width-responsive={format === 'auto' ? 'true' : undefined}
-        style={{ display: 'block', minHeight: format === 'horizontal' ? 90 : 250 }}
       />
     </section>
   );

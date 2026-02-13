@@ -48,7 +48,7 @@ export default function GlossaryPage() {
         </nav>
 
         {/* 記事内広告（目次後） */}
-        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-4" />}
+        <AdSlot format="auto" className="my-4" />
 
         {/* 用語一覧 */}
         {categories.map(cat => (
@@ -69,7 +69,7 @@ export default function GlossaryPage() {
         ))}
 
         {/* コンテンツ間広告 */}
-        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-4" />}
+        <AdSlot format="auto" className="my-4" />
 
         {/* CTA */}
         <div className="text-center bg-green-50 rounded-xl p-6 border border-green-200">

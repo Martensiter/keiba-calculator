@@ -123,7 +123,7 @@ export default function BeginnersPage() {
         </nav>
 
         {/* 記事内広告（目次後） */}
-        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-6" />}
+        <AdSlot format="auto" className="my-6" />
 
         {/* 各ステップ */}
         {steps.map((step, i) => (
@@ -208,7 +208,7 @@ export default function BeginnersPage() {
         ))}
 
         {/* コンテンツ間広告 */}
-        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-6" />}
+        <AdSlot format="auto" className="my-6" />
 
         {/* 注意事項 */}
         <section className="bg-red-50 border border-red-200 rounded-xl p-5">

@@ -2,10 +2,10 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { AnalyticsScripts } from '@/components/analytics/AnalyticsScripts';
-import { AdSenseScript } from '@/components/ads/AdSenseScript';
 import { AdSlot } from '@/components/ads/AdSlot';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://keiba-calculator.vercel.app';
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-3594496442498529';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -43,6 +43,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* ダークモードちらつき防止: ページ描画前にクラスを適用 */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('keiba-theme');var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.documentElement.classList.add('dark')}catch(e){}})()` }} />
+        {/* Google AdSense: サイト所有権確認・広告表示用（全ページの head に必要） */}
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="bg-(--color-surface) text-(--color-text-primary) min-h-screen transition-colors">
         <AnalyticsScripts />
@@ -64,13 +70,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="max-w-5xl mx-auto px-4 py-6">
           {children}
         </main>
-        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
-          <>
-            <AdSenseScript />
-            <div className="max-w-5xl mx-auto px-4 py-4">
-              <AdSlot format="horizontal" className="rounded-lg overflow-hidden" />
-            </div>
-          </>
+        {ADSENSE_CLIENT && process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
+          <div className="max-w-5xl mx-auto px-4 py-4">
+            <AdSlot format="horizontal" className="rounded-lg overflow-hidden" />
+          </div>
         )}
         <footer className="bg-gray-800 dark:bg-gray-950 text-gray-400 mt-12">
           <div className="max-w-5xl mx-auto px-4 py-6 text-sm">

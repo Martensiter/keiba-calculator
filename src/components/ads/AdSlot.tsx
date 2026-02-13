@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-3594496442498529';
 const ADSENSE_ENABLED = !!ADSENSE_CLIENT;
 
 type AdFormat = 'auto' | 'rectangle' | 'horizontal' | 'vertical' | 'fluid';

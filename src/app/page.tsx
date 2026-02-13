@@ -14,8 +14,6 @@ import PurchaseList from '@/components/calculator/PurchaseList';
 import IpatImporter from '@/components/ipat/IpatImporter';
 import JraOddsImporter from '@/components/calculator/JraOddsImporter';
 import { WebApplicationJsonLd, FAQPageJsonLd } from '@/components/seo/JsonLd';
-import AdBanner from '@/components/ads/AdBanner';
-import { AD_SLOTS } from '@/lib/ads/config';
 import { AdSlot } from '@/components/ads/AdSlot';
 
 const STORAGE_KEY = 'keiba-calculator-state';
@@ -353,9 +351,9 @@ export default function CalculatorPage() {
           />
         </section>
 
-        {/* 広告（AdSense審査通過後に表示。環境変数設定時のみ） */}
-        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
-          <AdSlot format="auto" className="my-4" />
+        {/* コンテンツ間広告（AdSense。スロットID設定時に表示） */}
+        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
+          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-4" />
         )}
 
         {/* 購入リストに追加 */}
@@ -370,9 +368,6 @@ export default function CalculatorPage() {
           </div>
         )}
 
-        {/* コンテンツ間広告 */}
-        <AdBanner slot={AD_SLOTS.contentRectangle} />
-
         {/* 購入リスト */}
         <section>
           <PurchaseList
@@ -383,8 +378,10 @@ export default function CalculatorPage() {
           />
         </section>
 
-        {/* 記事内広告（FAQ前） */}
-        <AdBanner slot={AD_SLOTS.inArticle} />
+        {/* 記事内広告（AdSense。スロットID設定時に表示） */}
+        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
+          <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-4" />
+        )}
 
         {/* FAQ */}
         <section className="bg-white dark:bg-(--color-surface-card) rounded-xl shadow-sm border border-(--color-border) p-6">

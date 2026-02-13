@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { BreadcrumbJsonLd, HowToJsonLd, ArticleJsonLd } from '@/components/seo/JsonLd';
-import AdBanner from '@/components/ads/AdBanner';
-import { AD_SLOTS } from '@/lib/ads/config';
+import { AdSlot } from '@/components/ads/AdSlot';
 
 export const metadata: Metadata = {
   title: 'はじめての方へ | 競馬初心者向けガイド',
@@ -124,7 +123,7 @@ export default function BeginnersPage() {
         </nav>
 
         {/* 記事内広告（目次後） */}
-        <AdBanner slot={AD_SLOTS.inArticle} className="my-6" />
+        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-6" />}
 
         {/* 各ステップ */}
         {steps.map((step, i) => (
@@ -209,7 +208,7 @@ export default function BeginnersPage() {
         ))}
 
         {/* コンテンツ間広告 */}
-        <AdBanner slot={AD_SLOTS.contentRectangle} className="my-6" />
+        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="auto" className="my-6" />}
 
         {/* 注意事項 */}
         <section className="bg-red-50 border border-red-200 rounded-xl p-5">

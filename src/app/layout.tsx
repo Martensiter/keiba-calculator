@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import ThemeToggle from '@/components/ui/ThemeToggle';
-import AdBanner from '@/components/ads/AdBanner';
-import { AD_SLOTS } from '@/lib/ads/config';
 import { AnalyticsScripts } from '@/components/analytics/AnalyticsScripts';
 import { AdSlot } from '@/components/ads/AdSlot';
 
@@ -69,21 +67,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
         </header>
-        {/* ヘッダー下広告 */}
-        <div className="max-w-5xl mx-auto px-4 pt-4">
-          <AdBanner slot={AD_SLOTS.headerBanner} />
-        </div>
+        {/* ヘッダー下広告（AdSenseのみ。スロットID設定時に表示） */}
+        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
+          <div className="max-w-5xl mx-auto px-4 pt-4">
+            <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="horizontal" className="rounded-lg overflow-hidden" />
+          </div>
+        )}
         <main className="max-w-5xl mx-auto px-4 py-6">
           {children}
         </main>
-        {/* フッター上広告: AdSense（slot設定時）or AdBanner */}
-        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID ? (
+        {/* フッター上広告（AdSenseのみ） */}
+        {process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
           <div className="max-w-5xl mx-auto px-4 py-4">
-            <AdSlot format="horizontal" className="rounded-lg overflow-hidden" />
-          </div>
-        ) : (
-          <div className="max-w-5xl mx-auto px-4 pb-4">
-            <AdBanner slot={AD_SLOTS.footerBanner} />
+            <AdSlot slotId={process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID} format="horizontal" className="rounded-lg overflow-hidden" />
           </div>
         )}
         <footer className="bg-gray-800 dark:bg-gray-950 text-gray-400 mt-12">

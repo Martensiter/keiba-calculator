@@ -1,7 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-// デプロイ時にドメインを変更してください
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://keiba-calculator.example.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://keiba-calculator.vercel.app';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -28,6 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
     },
   ];
 }

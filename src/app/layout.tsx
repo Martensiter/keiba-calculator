@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import ThemeToggle from '@/components/ui/ThemeToggle';
+import { AnalyticsScripts } from '@/components/analytics/AnalyticsScripts';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://keiba-calculator.example.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://keiba-calculator.vercel.app';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('keiba-theme');var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.documentElement.classList.add('dark')}catch(e){}})()` }} />
       </head>
       <body className="bg-(--color-surface) text-(--color-text-primary) min-h-screen transition-colors">
+        <AnalyticsScripts />
         <header className="bg-green-700 dark:bg-green-900 text-white shadow-md">
           <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
             <a href="/" className="text-lg font-bold tracking-tight">
@@ -68,6 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <a href="/beginners" className="hover:text-white transition-colors">はじめての方へ</a>
                 <a href="/guide" className="hover:text-white transition-colors">馬券の買い方ガイド</a>
                 <a href="/glossary" className="hover:text-white transition-colors">競馬用語集</a>
+                <a href="/privacy" className="hover:text-white transition-colors">プライバシーポリシー</a>
               </div>
             </div>
             <p className="text-xs text-gray-500 mt-3 text-center">

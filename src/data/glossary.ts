@@ -18,7 +18,7 @@ export const glossaryData: GlossaryItem[] = [
 
   // 馬券
   { term: '単勝', reading: 'たんしょう', category: '馬券', description: '1着になる馬を当てる馬券。最もシンプルで初心者にもおすすめの馬券種です。' },
-  { term: '複勝', reading: 'ふくしょう', category: '馬券', description: '3着以内に入る馬を当てる馬券。的中率が高く、堅実な投資に向いています。出走頭数が7頭以下の場合は2着以内。' },
+  { term: '複勝', reading: 'ふくしょう', category: '馬券', description: '3着以内に入る馬を当てる馬券。単勝より的中しやすい一方、配当は低めになりやすい傾向があります。出走頭数が7頭以下の場合は2着以内が的中条件で、4頭以下のレースでは複勝は発売されません。' },
   { term: '枠連', reading: 'わくれん', category: '馬券', description: '1着・2着の枠番号の組み合わせを当てる馬券（順不同）。同枠に複数の馬がいる場合、的中の幅が広がります。' },
   { term: '馬連', reading: 'うまれん', category: '馬券', description: '1着・2着の馬番号の組み合わせを当てる馬券（順不同）。枠連より難しいが配当は高くなります。' },
   { term: 'ワイド', reading: 'わいど', category: '馬券', description: '3着以内に入る2頭の組み合わせを当てる馬券（順不同）。馬連より的中しやすいが配当はやや低めです。' },
@@ -44,7 +44,7 @@ export const glossaryData: GlossaryItem[] = [
   { term: 'ダム', reading: 'だむ', category: '血統', description: '繁殖牝馬（母馬）のこと。母系の血統も競走能力に影響を与えます。' },
 
   // その他
-  { term: '即PAT', reading: 'そくぱっと', category: 'その他', description: 'JRAのインターネット投票サービス。銀行口座から直接馬券を購入でき、パソコンやスマートフォンから利用可能です。' },
+  { term: '即PAT', reading: 'そくぱっと', category: 'その他', description: 'JRAのインターネット投票サービス。登録した金融機関口座から、即PATの購入限度額へ資金移動（入金指示／振替）を行ったうえで、パソコンやスマートフォンから投票（馬券購入）できます。' },
   { term: 'パドック', reading: 'ぱどっく', category: 'その他', description: 'レース前に出走馬を周回させて観客に見せる場所。馬の調子や気配を確認するのに重要です。' },
   { term: '調教', reading: 'ちょうきょう', category: 'その他', description: 'レースに向けた馬のトレーニング。調教の内容やタイムは予想の重要な材料になります。' },
 ];

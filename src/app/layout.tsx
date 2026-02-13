@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import ThemeToggle from '@/components/ui/ThemeToggle';
 import { AnalyticsScripts } from '@/components/analytics/AnalyticsScripts';
+import { AdSenseScript } from '@/components/ads/AdSenseScript';
+import { AdSlot } from '@/components/ads/AdSlot';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://keiba-calculator.vercel.app';
 
@@ -62,6 +64,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="max-w-5xl mx-auto px-4 py-6">
           {children}
         </main>
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
+          <>
+            <AdSenseScript />
+            <div className="max-w-5xl mx-auto px-4 py-4">
+              <AdSlot format="horizontal" className="rounded-lg overflow-hidden" />
+            </div>
+          </>
+        )}
         <footer className="bg-gray-800 dark:bg-gray-950 text-gray-400 mt-12">
           <div className="max-w-5xl mx-auto px-4 py-6 text-sm">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">

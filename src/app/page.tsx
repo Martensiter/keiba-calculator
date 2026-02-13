@@ -14,6 +14,7 @@ import PurchaseList from '@/components/calculator/PurchaseList';
 import IpatImporter from '@/components/ipat/IpatImporter';
 import JraOddsImporter from '@/components/calculator/JraOddsImporter';
 import { WebApplicationJsonLd, FAQPageJsonLd } from '@/components/seo/JsonLd';
+import { AdSlot } from '@/components/ads/AdSlot';
 
 const STORAGE_KEY = 'keiba-calculator-state';
 
@@ -349,6 +350,11 @@ export default function CalculatorPage() {
             onUnitAmountChange={setUnitAmount}
           />
         </section>
+
+        {/* 広告（AdSense審査通過後に表示。環境変数設定時のみ） */}
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
+          <AdSlot format="auto" className="my-4" />
+        )}
 
         {/* 購入リストに追加 */}
         {currentSelections.length > 0 && (

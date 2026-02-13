@@ -1,0 +1,60 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+const ADSENSE_ENABLED = !!ADSENSE_CLIENT;
+
+type AdFormat = 'auto' | 'rectangle' | 'horizontal' | 'vertical' | 'fluid';
+
+interface AdSlotProps {
+  /** 広告スロットID（AdSenseで作成した広告ユニットのID） */
+  slotId?: string;
+  /** 表示形式。auto はレスポンシブ */
+  format?: AdFormat;
+  /** レイアウト用のクラス名 */
+  className?: string;
+  /** 広告が表示されるセクションのラベル（スクリーンリーダー用） */
+  label?: string;
+}
+
+/**
+ * 広告表示コンポーネント（Google AdSense対応）
+ * NEXT_PUBLIC_ADSENSE_CLIENT_ID が設定されている場合に表示
+ *
+ * 競馬系サイトはAdSense審査で制限される場合があります。
+ * 審査通過後、Googleがサイト内容に応じて競馬関連広告を配信する可能性があります。
+ */
+export function AdSlot({ slotId, format = 'auto', className = '', label = '広告' }: AdSlotProps) {
+  const insRef = useRef<HTMLModElement>(null);
+  const slot = slotId || process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID;
+
+  useEffect(() => {
+    if (!ADSENSE_ENABLED || !slot || !insRef.current) return;
+    try {
+      ((window as unknown as { adsbygoogle: unknown[] }).adsbygoogle = (window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle || []).push({});
+    } catch (e) {
+      console.warn('AdSense push error:', e);
+    }
+  }, [slot]);
+
+  if (!ADSENSE_ENABLED) return null;
+  if (!slot) return null;
+
+  return (
+    <section
+      className={`min-h-[90px] flex items-center justify-center ${className}`}
+      aria-label={label}
+    >
+      <ins
+        ref={insRef}
+        className="adsbygoogle block"
+        data-ad-client={ADSENSE_CLIENT}
+        data-ad-slot={slot}
+        data-ad-format={format}
+        data-full-width-responsive={format === 'auto' ? 'true' : undefined}
+        style={{ display: 'block', minHeight: format === 'horizontal' ? 90 : 250 }}
+      />
+    </section>
+  );
+}

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 import { glossaryData, GlossaryItem } from '@/data/glossary';
+import AdBanner from '@/components/ads/AdBanner';
+import { AD_SLOTS } from '@/lib/ads/config';
 
 export const metadata: Metadata = {
   title: '競馬用語集 | 初心者向け競馬用語辞典',
@@ -46,6 +48,9 @@ export default function GlossaryPage() {
           </div>
         </nav>
 
+        {/* 記事内広告（目次後） */}
+        <AdBanner slot={AD_SLOTS.inArticle} className="my-4" />
+
         {/* 用語一覧 */}
         {categories.map(cat => (
           <section key={cat} id={cat} className="scroll-mt-20">
@@ -63,6 +68,9 @@ export default function GlossaryPage() {
             </div>
           </section>
         ))}
+
+        {/* コンテンツ間広告 */}
+        <AdBanner slot={AD_SLOTS.contentRectangle} className="my-4" />
 
         {/* CTA */}
         <div className="text-center bg-green-50 rounded-xl p-6 border border-green-200">

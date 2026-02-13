@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { BreadcrumbJsonLd, HowToJsonLd } from '@/components/seo/JsonLd';
+import AdBanner from '@/components/ads/AdBanner';
+import { AD_SLOTS } from '@/lib/ads/config';
 
 export const metadata: Metadata = {
   title: '馬券の買い方ガイド | 初心者向け競馬馬券入門',
@@ -129,6 +131,9 @@ export default function GuidePage() {
           ))}
         </section>
 
+        {/* 記事内広告（馬券種解説後） */}
+        <AdBanner slot={AD_SLOTS.inArticle} className="my-4" />
+
         {/* 購入方法の解説 */}
         <section className="space-y-4">
           <h2 className="text-xl font-bold text-gray-900 border-b-2 border-green-600 pb-2">購入方法の種類</h2>
@@ -170,6 +175,9 @@ export default function GuidePage() {
             </p>
           </div>
         </section>
+
+        {/* コンテンツ間広告 */}
+        <AdBanner slot={AD_SLOTS.contentRectangle} className="my-4" />
 
         {/* JRAオッズの見方 */}
         <section className="space-y-4">

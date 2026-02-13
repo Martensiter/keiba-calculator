@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import ThemeToggle from '@/components/ui/ThemeToggle';
+import AdBanner from '@/components/ads/AdBanner';
+import { ADSENSE_CLIENT_ID, isAdsEnabled, AD_SLOTS } from '@/lib/ads/config';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://keiba-calculator.example.com';
 
@@ -40,6 +43,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* ダークモードちらつき防止: ページ描画前にクラスを適用 */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('keiba-theme');var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.documentElement.classList.add('dark')}catch(e){}})()` }} />
+        {/* Google AdSense スクリプト（クライアントID設定時のみ読み込み） */}
+        {isAdsEnabled() && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
       </head>
       <body className="bg-(--color-surface) text-(--color-text-primary) min-h-screen transition-colors">
         <header className="bg-green-700 dark:bg-green-900 text-white shadow-md">
@@ -57,9 +69,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </div>
           </div>
         </header>
+        {/* ヘッダー下広告 */}
+        <div className="max-w-5xl mx-auto px-4 pt-4">
+          <AdBanner slot={AD_SLOTS.headerBanner} />
+        </div>
         <main className="max-w-5xl mx-auto px-4 py-6">
           {children}
         </main>
+        {/* フッター上広告 */}
+        <div className="max-w-5xl mx-auto px-4 pb-4">
+          <AdBanner slot={AD_SLOTS.footerBanner} />
+        </div>
         <footer className="bg-gray-800 dark:bg-gray-950 text-gray-400 mt-12">
           <div className="max-w-5xl mx-auto px-4 py-6 text-sm">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">

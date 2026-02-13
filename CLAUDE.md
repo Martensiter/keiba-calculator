@@ -33,6 +33,8 @@ src/
 │   ├── twitter-image.tsx         # Twitter Card画像の動的生成
 │   └── globals.css               # グローバルスタイル（テーマCSS変数定義）
 ├── components/
+│   ├── ads/                      # 広告コンポーネント
+│   │   └── AdBanner.tsx          # 広告バナー（AdSense対応・プレースホルダー）
 │   ├── calculator/               # 計算機関連コンポーネント
 │   │   ├── RaceSetup.tsx        # レース設定（会場・レース番号）
 │   │   ├── BetTypeSelector.tsx  # 馬券種選択（インラインヘルプ付き）
@@ -54,6 +56,8 @@ src/
 │       └── ThemeToggle.tsx       # ダークモード切替ボタン
 ├── lib/
 │   ├── types.ts                  # 型定義（全体）
+│   ├── ads/                      # 広告設定
+│   │   └── config.ts             # 広告スロット定義・AdSense設定
 │   ├── calculator/               # 計算ロジック
 │   │   ├── betTypes.ts          # 馬券種の定義・判定
 │   │   ├── combinations.ts      # 組み合わせ計算（BOX/ながし/フォーメーション）
@@ -119,6 +123,15 @@ src/
 - **CSS変数方式**: globals.css でセマンティックカラー変数を定義（`--color-surface`, `--color-text-primary` 等）
 - **ちらつき防止**: `<head>` 内インラインスクリプトでページ描画前にクラスを適用
 - **localStorage永続化**: `keiba-theme` キーで保存
+
+### 9. 広告機能（Google AdSense）
+- **AdBanner コンポーネント**: レスポンシブ・ダークモード対応の汎用広告コンポーネント
+- **広告スロット**: ヘッダー下、コンテンツ間（rectangle）、記事内（in-article）、フッター上、サイドバー（将来用）
+- **環境変数方式**: `NEXT_PUBLIC_ADSENSE_CLIENT_ID` と各スロットIDで制御
+- **開発環境**: AdSense未設定時はプレースホルダー表示
+- **配置ページ**: 全ページ（layout.tsxのヘッダー下/フッター上 + 各ページのコンテンツ間）
+- **対応サイズ**: leaderboard(728x90), rectangle(336x280), banner(468x60), large-mobile-banner(320x100), in-article(fluid)
+- **モバイル対応**: `showOnMobile` / `showOnDesktop` フラグで表示制御
 
 ## データフロー
 
@@ -201,6 +214,7 @@ npm start      # 本番サーバー起動
 - ✅ 結果入力モーダル強化（枠番入力・枠連的中判定対応）
 - ✅ ダークモード（ライト/ダーク/システム追従、CSS変数方式）
 - ✅ OGP画像動的生成（opengraph-image.tsx / twitter-image.tsx）
+- ✅ 広告機能（Google AdSense対応、環境変数設定方式）
 
 ## TODOリスト / 今後の拡張案
 - [ ] 複数レースの一括管理機能
@@ -221,6 +235,8 @@ npm start      # 本番サーバー起動
 - ダークモードはclass方式（`html.dark`）。Tailwind v4の `@custom-variant dark` で定義
 - テーマのlocalStorageキーは `keiba-theme`（light / dark / system）
 - OGP画像はedge runtimeで動的生成されるため静的エクスポート不可
+- 広告は `NEXT_PUBLIC_ADSENSE_CLIENT_ID` 未設定時はプレースホルダーを表示（開発環境用）
+- 広告スロットIDは各環境変数（`NEXT_PUBLIC_AD_SLOT_*`）で個別に設定可能
 
 ## 最近の作業履歴
 - Initial implementation of keiba odds calculator (commit: 5ab7e45)
@@ -238,6 +254,10 @@ npm start      # 本番サーバー起動
 - 機能追加 (2026-02-12 続き2)
   - ダークモード実装（CSS変数方式、ライト/ダーク/システム3モード切替）
   - OGP画像・Twitter Card画像の動的生成（edge runtime）
+- 機能追加 (2026-02-13)
+  - 広告機能実装（Google AdSense対応、環境変数設定方式）
+  - AdBannerコンポーネント（レスポンシブ・ダークモード・開発用プレースホルダー）
+  - 全ページへの広告スロット配置（ヘッダー下/コンテンツ間/記事内/フッター上）
 
 ## ファイル参照の目安
 - 型定義を確認: `src/lib/types.ts`
@@ -250,3 +270,4 @@ npm start      # 本番サーバー起動
 - OGP画像: `src/app/opengraph-image.tsx`, `src/app/twitter-image.tsx`
 - ダークモード: `src/app/globals.css`（テーマ変数）, `src/components/ui/ThemeToggle.tsx`
 - 初心者向け: `src/app/beginners/page.tsx`, `src/app/guide/page.tsx`
+- 広告: `src/components/ads/AdBanner.tsx`, `src/lib/ads/config.ts`

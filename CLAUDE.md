@@ -161,11 +161,17 @@ npm start      # 本番サーバー起動
 ```
 
 ## モバイル開発
-- **GitHub Codespaces対応**: `.devcontainer/devcontainer.json` で設定済み
-- **モバイル完結開発**: スマホ・タブレットだけで開発可能
-- **詳細ガイド**: `MOBILE_DEV.md` 参照
-- **推奨環境**: GitHub Codespaces（月60時間まで無料）
-- **devスクリプト**: `-H 0.0.0.0` でネットワークアクセス対応
+- **推奨方法**: GitHub Web UI + Vercel自動デプロイ
+- **完全無料**: 時間制限なし、実機プレビュー可能
+- **代替方法**: GitHub Codespaces（`.devcontainer/devcontainer.json` で設定済み）
+- **詳細ガイド**: `MOBILE_DEV.md` / `QUICKSTART.md` 参照
+- **devスクリプト**: `-H 0.0.0.0` でネットワークアクセス対応（Codespaces/ローカルネットワーク用）
+
+### モバイル開発ワークフロー
+1. GitHub Web UIでファイル編集
+2. コミット
+3. Vercel自動デプロイ（30秒）
+4. プレビューURLで実機確認
 
 ## 実装済み機能
 - ✅ 基本的な馬券計算（全馬券種対応）

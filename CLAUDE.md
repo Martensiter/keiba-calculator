@@ -217,7 +217,8 @@ npm start      # 本番サーバー起動
 - localStorage保存は`raceInfo`, `tickets`, `horseCount`のみ
 - betType/purchaseMethod変更時は選択状態をリセット
 - JRAオッズパーサーは全角数字・→・ー等の全角文字を自動で半角に正規化
-- BASE_URL は環境変数 `NEXT_PUBLIC_BASE_URL` で設定（デフォルト: example.com）
+- BASE_URL は環境変数 `NEXT_PUBLIC_BASE_URL` で設定（デフォルト: keiba-calculator.vercel.app）
+- 競馬系広告入稿: `docs/AD_SUBMISSION.md` にポリシー調査・文言・入稿手順を記載
 - ダークモードはclass方式（`html.dark`）。Tailwind v4の `@custom-variant dark` で定義
 - テーマのlocalStorageキーは `keiba-theme`（light / dark / system）
 - OGP画像はedge runtimeで動的生成されるため静的エクスポート不可

@@ -124,14 +124,18 @@ src/
 - **ちらつき防止**: `<head>` 内インラインスクリプトでページ描画前にクラスを適用
 - **localStorage永続化**: `keiba-theme` キーで保存
 
-### 9. 広告機能（Google AdSense）
-- **AdBanner コンポーネント**: レスポンシブ・ダークモード対応の汎用広告コンポーネント
-- **広告スロット**: ヘッダー下、コンテンツ間（rectangle）、記事内（in-article）、フッター上、サイドバー（将来用）
-- **環境変数方式**: `NEXT_PUBLIC_ADSENSE_CLIENT_ID` と各スロットIDで制御
-- **開発環境**: AdSense未設定時はプレースホルダー表示
-- **配置ページ**: 全ページ（layout.tsxのヘッダー下/フッター上 + 各ページのコンテンツ間）
-- **対応サイズ**: leaderboard(728x90), rectangle(336x280), banner(468x60), large-mobile-banner(320x100), in-article(fluid)
-- **モバイル対応**: `showOnMobile` / `showOnDesktop` フラグで表示制御
+### 9. 広告機能（競馬アフィリエイト直接入稿）
+- **直接入稿方式**: A8.net / バリューコマース / アクセストレード等のHTMLコードをそのまま設定可能
+- **3種類の広告タイプ**:
+  - `html`: アフィリエイトASPのHTMLタグをそのまま貼り付け
+  - `image`: バナー画像URL + リンクURL
+  - `text`: CSS装飾テキスト広告（テーマカラー・CTAボタン・バッジ対応）
+- **広告スロット**: ヘッダー下(header)、コンテンツ間(content)、記事内(in-article)、フッター上(footer)
+- **競馬系サンプル広告**: JRA即PAT、netkeiba.com、競馬ブック、JRA UMACA
+- **ローテーション**: 同じpositionに複数クリエイティブ設定可、priority順で表示
+- **レスポンシブ**: showOnMobile / showOnDesktop フラグ、モバイル用CSSスタイル
+- **ダークモード対応**: CSS変数を活用した自動テーマ切替
+- **入稿方法**: `src/lib/ads/config.ts` の `AD_CREATIVES` 配列にクリエイティブを追加
 
 ## データフロー
 
@@ -235,8 +239,10 @@ npm start      # 本番サーバー起動
 - ダークモードはclass方式（`html.dark`）。Tailwind v4の `@custom-variant dark` で定義
 - テーマのlocalStorageキーは `keiba-theme`（light / dark / system）
 - OGP画像はedge runtimeで動的生成されるため静的エクスポート不可
-- 広告は `NEXT_PUBLIC_ADSENSE_CLIENT_ID` 未設定時はプレースホルダーを表示（開発環境用）
-- 広告スロットIDは各環境変数（`NEXT_PUBLIC_AD_SLOT_*`）で個別に設定可能
+- 広告クリエイティブは `src/lib/ads/config.ts` の `AD_CREATIVES` 配列で管理（コードベース直接管理）
+- type: 'html' でアフィリエイトHTMLコードをそのまま dangerouslySetInnerHTML で描画
+- 広告が未設定のスロットは何も表示されない（プレースホルダーなし）
+- テキスト広告のリンクには `rel="noopener noreferrer sponsored"` を自動付与
 
 ## 最近の作業履歴
 - Initial implementation of keiba odds calculator (commit: 5ab7e45)
@@ -255,8 +261,9 @@ npm start      # 本番サーバー起動
   - ダークモード実装（CSS変数方式、ライト/ダーク/システム3モード切替）
   - OGP画像・Twitter Card画像の動的生成（edge runtime）
 - 機能追加 (2026-02-13)
-  - 広告機能実装（Google AdSense対応、環境変数設定方式）
-  - AdBannerコンポーネント（レスポンシブ・ダークモード・開発用プレースホルダー）
+  - 広告機能実装（競馬アフィリエイト直接入稿方式）
+  - 3種類の広告タイプ: html（ASPコード貼付）、image（バナー画像）、text（CSS装飾テキスト）
+  - 競馬系サンプル広告クリエイティブ4種（JRA即PAT / netkeiba / 競馬ブック / UMACA）
   - 全ページへの広告スロット配置（ヘッダー下/コンテンツ間/記事内/フッター上）
 
 ## ファイル参照の目安

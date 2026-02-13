@@ -4,7 +4,7 @@ import ThemeToggle from '@/components/ui/ThemeToggle';
 import AdBanner from '@/components/ads/AdBanner';
 import { AD_SLOTS } from '@/lib/ads/config';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://keiba-calculator.example.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://keiba-calculator.vercel.app';
 
 export const viewport: Viewport = {
   width: 'device-width',

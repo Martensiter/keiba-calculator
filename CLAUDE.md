@@ -1,5 +1,10 @@
 # 競馬オッズ計算ツール (keiba-calculator)
 
+## 🌐 公開URL
+- **本番環境**: https://keiba-calculator.vercel.app/
+- **デプロイ**: Vercel（main ブランチに自動デプロイ）
+- **プレビュー**: PRごとに自動生成
+
 ## プロジェクト概要
 Next.js + React + TypeScriptで構築された競馬の馬券計算ツール。
 馬券の点数・合計金額・回収率をリアルタイムで計算し、BOX・ながし・フォーメーションに対応。
@@ -161,11 +166,22 @@ npm start      # 本番サーバー起動
 ```
 
 ## モバイル開発
-- **GitHub Codespaces対応**: `.devcontainer/devcontainer.json` で設定済み
-- **モバイル完結開発**: スマホ・タブレットだけで開発可能
-- **詳細ガイド**: `MOBILE_DEV.md` 参照
-- **推奨環境**: GitHub Codespaces（月60時間まで無料）
-- **devスクリプト**: `-H 0.0.0.0` でネットワークアクセス対応
+- **推奨方法**: GitHub Web UI + Vercel自動デプロイ
+- **完全無料**: 時間制限なし、実機プレビュー可能
+- **代替方法**: GitHub Codespaces（`.devcontainer/devcontainer.json` で設定済み）
+- **詳細ガイド**: `MOBILE_DEV.md` / `QUICKSTART.md` 参照
+- **devスクリプト**: `-H 0.0.0.0` でネットワークアクセス対応（Codespaces/ローカルネットワーク用）
+
+### モバイル開発ワークフロー
+1. GitHub Web UIでファイル編集
+2. コミット → PRが自動生成
+3. Vercelがプレビューデプロイ（30秒）
+4. プレビューURLで実機確認
+5. 問題なければPRをマージ → 本番デプロイ（https://keiba-calculator.vercel.app/）
+
+### デプロイ環境
+- **プレビュー**: PRごとに自動生成（例：`keiba-calculator-xxx.vercel.app`）
+- **本番**: https://keiba-calculator.vercel.app/（main ブランチ）
 
 ## 実装済み機能
 - ✅ 基本的な馬券計算（全馬券種対応）

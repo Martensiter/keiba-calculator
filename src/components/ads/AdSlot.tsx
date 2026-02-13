@@ -32,10 +32,18 @@ export function AdSlot({ slotId, format = 'auto', className = '', label = 'åºƒå‘
 
   useEffect(() => {
     if (!ADSENSE_ENABLED || !slot || !insRef.current) return;
-    try {
-      ((window as unknown as { adsbygoogle: unknown[] }).adsbygoogle = (window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle || []).push({});
-    } catch (e) {
-      console.warn('AdSense push error:', e);
+    const pushAd = () => {
+      try {
+        ((window as unknown as { adsbygoogle: unknown[] }).adsbygoogle = (window as unknown as { adsbygoogle?: unknown[] }).adsbygoogle || []).push({});
+      } catch (e) {
+        console.warn('AdSense push error:', e);
+      }
+    };
+    if (typeof (window as unknown as { adsbygoogle?: unknown }).adsbygoogle !== 'undefined') {
+      pushAd();
+    } else {
+      const t = setTimeout(pushAd, 300);
+      return () => clearTimeout(t);
     }
   }, [slot]);
 

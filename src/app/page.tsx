@@ -16,6 +16,7 @@ import JraOddsImporter from '@/components/calculator/JraOddsImporter';
 import { WebApplicationJsonLd, FAQPageJsonLd } from '@/components/seo/JsonLd';
 import AdBanner from '@/components/ads/AdBanner';
 import { AD_SLOTS } from '@/lib/ads/config';
+import { AdSlot } from '@/components/ads/AdSlot';
 
 const STORAGE_KEY = 'keiba-calculator-state';
 
@@ -242,6 +243,9 @@ export default function CalculatorPage() {
             馬券の点数・合計金額・回収率をリアルタイムで計算。BOX・ながし・フォーメーションに対応。
             即PATデータ取り込み・JRA公式オッズ転記にも対応しています。
           </p>
+          <p className="text-xs text-(--color-text-muted) italic">
+            ※ 当サイトは馬券の購入を推奨しません。馬券購入は自己責任で、20歳以上の方に限られます。
+          </p>
           <div className="flex flex-wrap gap-2 text-xs">
             <a href="/beginners" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">はじめての方はこちら →</a>
             <a href="/guide" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">馬券の買い方ガイド →</a>
@@ -348,6 +352,11 @@ export default function CalculatorPage() {
             onUnitAmountChange={setUnitAmount}
           />
         </section>
+
+        {/* 広告（AdSense審査通過後に表示。環境変数設定時のみ） */}
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && process.env.NEXT_PUBLIC_ADSENSE_SLOT_ID && (
+          <AdSlot format="auto" className="my-4" />
+        )}
 
         {/* 購入リストに追加 */}
         {currentSelections.length > 0 && (

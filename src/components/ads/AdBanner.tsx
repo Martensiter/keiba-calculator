@@ -1,13 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { AdSlotConfig, AD_SIZES, ADSENSE_CLIENT_ID, isAdsEnabled } from '@/lib/ads/config';
-
-declare global {
-  interface Window {
-    adsbygoogle?: Array<Record<string, unknown>>;
-  }
-}
+import { useEffect, useState, useMemo } from 'react';
+import {
+  AdSlotConfig,
+  AdCreative,
+  getCreativesForPosition,
+} from '@/lib/ads/config';
 
 interface AdBannerProps {
   slot: AdSlotConfig;
@@ -16,128 +14,165 @@ interface AdBannerProps {
 
 /**
  * 広告バナーコンポーネント
- * 
- * - AdSense クライアント ID が設定されている場合: Google AdSense 広告を表示
- * - 未設定の場合（開発環境）: プレースホルダーを表示
+ *
+ * 表示モード:
+ * - type: 'html'  → アフィリエイトASPのHTMLコードをそのまま挿入（dangerouslySetInnerHTML）
+ * - type: 'image' → バナー画像 + リンク
+ * - type: 'text'  → CSS装飾テキスト広告
+ *
+ * 広告が未設定の場合は何も表示しない（開発中のプレースホルダーは不要）
  */
 export default function AdBanner({ slot, className = '' }: AdBannerProps) {
-  const adRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const initialized = useRef(false);
+  const [mounted, setMounted] = useState(false);
 
-  // レスポンシブ判定
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    setMounted(true);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
   }, []);
 
-  // AdSense 広告の初期化
-  useEffect(() => {
-    if (!isAdsEnabled() || !slot.adSlot || initialized.current) return;
+  const creatives = useMemo(
+    () => getCreativesForPosition(slot.position, slot.maxAds || 1),
+    [slot.position, slot.maxAds]
+  );
 
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-      initialized.current = true;
-    } catch (err) {
-      console.error('AdSense initialization error:', err);
-    }
-  }, [slot.adSlot]);
+  // SSR中 or マウント前は表示しない
+  if (!mounted) return null;
 
-  // モバイル/デスクトップでの表示制御
-  if (isMobile && slot.showOnMobile === false) return null;
-  if (!isMobile && slot.showOnDesktop === false) return null;
+  // 広告が無い場合は何も表示しない
+  if (creatives.length === 0) return null;
 
-  const sizeConfig = AD_SIZES[slot.size];
-  const isResponsive = sizeConfig.responsive || slot.size === 'in-article';
+  // レスポンシブフィルタ
+  const filtered = creatives.filter(c => {
+    if (isMobile && c.showOnMobile === false) return false;
+    if (!isMobile && c.showOnDesktop === false) return false;
+    return true;
+  });
 
-  // AdSense が有効な場合
-  if (isAdsEnabled() && slot.adSlot) {
-    return (
-      <div
-        className={`ad-container ad-container--${slot.size} ${className}`}
-        data-ad-slot={slot.id}
-      >
-        {slot.label && (
-          <p className="ad-label">{slot.label}</p>
-        )}
-        <div ref={adRef} className="ad-content">
-          {slot.size === 'in-article' ? (
-            <ins
-              className="adsbygoogle"
-              style={{ display: 'block', textAlign: 'center' }}
-              data-ad-layout="in-article"
-              data-ad-format="fluid"
-              data-ad-client={ADSENSE_CLIENT_ID}
-              data-ad-slot={slot.adSlot}
-            />
-          ) : isResponsive ? (
-            <ins
-              className="adsbygoogle"
-              style={{ display: 'block' }}
-              data-ad-client={ADSENSE_CLIENT_ID}
-              data-ad-slot={slot.adSlot}
-              data-ad-format="auto"
-              data-full-width-responsive="true"
-            />
-          ) : (
-            <ins
-              className="adsbygoogle"
-              style={{
-                display: 'inline-block',
-                width: `${sizeConfig.width}px`,
-                height: `${sizeConfig.height}px`,
-              }}
-              data-ad-client={ADSENSE_CLIENT_ID}
-              data-ad-slot={slot.adSlot}
-            />
-          )}
-        </div>
+  if (filtered.length === 0) return null;
+
+  return (
+    <div className={`ad-slot ${className}`} data-ad-position={slot.position}>
+      {slot.label && <p className="ad-slot-label">{slot.label}</p>}
+      <div className="ad-slot-inner">
+        {filtered.map(creative => (
+          <AdCreativeRenderer key={creative.id} creative={creative} isMobile={isMobile} />
+        ))}
       </div>
+    </div>
+  );
+}
+
+// ── クリエイティブ描画 ──
+
+function AdCreativeRenderer({ creative, isMobile }: { creative: AdCreative; isMobile: boolean }) {
+  switch (creative.type) {
+    case 'html':
+      return <HtmlAd creative={creative} />;
+    case 'image':
+      return <ImageAd creative={creative} isMobile={isMobile} />;
+    case 'text':
+      return <TextAd creative={creative} />;
+    default:
+      return null;
+  }
+}
+
+// ── HTML広告（アフィリエイトタグ貼り付け） ──
+
+function HtmlAd({ creative }: { creative: AdCreative }) {
+  if (!creative.htmlCode) return null;
+
+  return (
+    <div
+      className="ad-creative ad-creative--html"
+      dangerouslySetInnerHTML={{ __html: creative.htmlCode }}
+    />
+  );
+}
+
+// ── 画像広告（バナー画像 + リンク） ──
+
+function ImageAd({ creative, isMobile }: { creative: AdCreative; isMobile: boolean }) {
+  if (!creative.imageUrl) return null;
+
+  const img = (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={creative.imageUrl}
+      alt={creative.altText || '広告'}
+      width={creative.width}
+      height={creative.height}
+      className="ad-creative ad-creative--image"
+      style={{
+        maxWidth: '100%',
+        height: 'auto',
+        ...(isMobile ? { maxWidth: Math.min(creative.width || 320, 320) } : {}),
+      }}
+    />
+  );
+
+  if (creative.linkUrl) {
+    return (
+      <a
+        href={creative.linkUrl}
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        className="ad-creative-link"
+      >
+        {img}
+      </a>
     );
   }
 
-  // 開発環境用プレースホルダー
+  return img;
+}
+
+// ── テキスト広告（CSSスタイル付き） ──
+
+function TextAd({ creative }: { creative: AdCreative }) {
+  const color = creative.themeColor || '#15803d';
+
   return (
-    <div
-      className={`ad-container ad-container--${slot.size} ad-placeholder ${className}`}
-      data-ad-slot={slot.id}
+    <a
+      href={creative.ctaUrl || '#'}
+      target="_blank"
+      rel="noopener noreferrer sponsored"
+      className="ad-creative ad-creative--text"
+      style={{ '--ad-theme': color } as React.CSSProperties}
     >
-      {slot.label && (
-        <p className="ad-label">{slot.label}</p>
-      )}
-      <div className="ad-placeholder-inner">
-        <div className="ad-placeholder-content">
-          <svg
-            className="ad-placeholder-icon"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M12 10v4M10 12h4"
-            />
-          </svg>
-          <span className="ad-placeholder-text">
-            広告スペース ({slot.size})
+      <div className="ad-text-body">
+        {/* バッジ */}
+        {creative.badge && (
+          <span className="ad-text-badge" style={{ backgroundColor: color }}>
+            {creative.badge}
           </span>
-          <span className="ad-placeholder-hint">
-            NEXT_PUBLIC_ADSENSE_CLIENT_ID を設定すると広告が表示されます
-          </span>
+        )}
+
+        {/* アイコン + タイトル */}
+        <div className="ad-text-header">
+          {creative.icon && <span className="ad-text-icon">{creative.icon}</span>}
+          <span className="ad-text-title">{creative.title}</span>
         </div>
+
+        {/* 説明文 */}
+        {creative.description && (
+          <p className="ad-text-desc">{creative.description}</p>
+        )}
+
+        {/* CTAボタン */}
+        {creative.ctaText && (
+          <span className="ad-text-cta" style={{ backgroundColor: color }}>
+            {creative.ctaText}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </span>
+        )}
       </div>
-    </div>
+    </a>
   );
 }

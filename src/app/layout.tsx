@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* ダークモードちらつき防止: ページ描画前にクラスを適用 */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('keiba-theme');var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.documentElement.classList.add('dark')}catch(e){}})()` }} />
-        {/* Google AdSense: サイト所有権確認・広告表示用（全ページの head に必要） */}
+        {/* Google AdSense: head にスクリプト（検証用）。本体は AdSenseInit で afterInteractive */}
         <script
           async
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
@@ -72,14 +72,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </header>
         {/* ヘッダー下広告（AdSense） */}
         <div className="max-w-5xl mx-auto px-4 pt-4">
-          <AdSlot format="horizontal" className="rounded-lg overflow-hidden" />
+          <AdSlot format="auto" className="rounded-lg overflow-hidden" />
         </div>
         <main className="max-w-5xl mx-auto px-4 py-6">
           {children}
         </main>
         {/* フッター上広告（AdSense） */}
         <div className="max-w-5xl mx-auto px-4 py-4">
-          <AdSlot format="horizontal" className="rounded-lg overflow-hidden" />
+          <AdSlot format="auto" className="rounded-lg overflow-hidden" />
         </div>
         <footer className="bg-gray-800 dark:bg-gray-950 text-gray-400 mt-12">
           <div className="max-w-5xl mx-auto px-4 py-6 text-sm">

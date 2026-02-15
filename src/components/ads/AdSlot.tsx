@@ -42,7 +42,7 @@ export function AdSlot({ slotId, format = 'auto', className = '', label = 'åºƒå‘
     if (typeof (window as unknown as { adsbygoogle?: unknown }).adsbygoogle !== 'undefined') {
       pushAd();
     } else {
-      const t = setTimeout(pushAd, 300);
+      const t = setTimeout(pushAd, 500);
       return () => clearTimeout(t);
     }
   }, [slot]);
@@ -60,8 +60,8 @@ export function AdSlot({ slotId, format = 'auto', className = '', label = 'åºƒå‘
         style={{ display: 'block' }}
         data-ad-client={ADSENSE_CLIENT}
         data-ad-slot={slot}
-        data-ad-format={format}
-        data-full-width-responsive={format === 'auto' ? 'true' : undefined}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
       />
     </section>
   );

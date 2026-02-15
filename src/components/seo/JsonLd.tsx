@@ -3,7 +3,7 @@ export function WebApplicationJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     name: '競馬オッズ計算ツール',
-    description: '競馬の馬券点数・オッズ・回収率を簡単に計算。即PATデータ取り込み対応。単勝・複勝・馬連・馬単・ワイド・3連複・3連単に対応。',
+    description: '競馬の買い目計算・オッズシミュレーションができる無料Webアプリ。馬券点数・回収率を計算。JRAオッズ転記・即PAT取り込み対応。馬連・馬単・ワイド・3連複・3連単に対応。',
     applicationCategory: 'UtilityApplication',
     operatingSystem: 'All',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },

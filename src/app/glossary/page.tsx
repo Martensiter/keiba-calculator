@@ -4,8 +4,9 @@ import { glossaryData, GlossaryItem } from '@/data/glossary';
 import { AdSlot } from '@/components/ads/AdSlot';
 
 export const metadata: Metadata = {
-  title: '競馬用語集 | 初心者向け競馬用語辞典',
-  description: '競馬の基本用語を初心者向けに分かりやすく解説。単勝・複勝・馬連・3連単などの馬券用語からオッズ・回収率などの基本用語まで網羅。',
+  title: '競馬用語集 | オッズ・買い目計算・馬券用語の辞典',
+  description: '競馬の基本用語をカテゴリ別に解説。オッズ・買い目計算・馬券用語（馬連・馬単・ワイド・3連複・3連単）から回収率・JRA用語まで。馬券シミュレーション前に押さえたい用語を網羅。',
+  keywords: ['競馬用語', 'オッズ', '買い目計算', '馬連', '馬単', 'ワイド', '3連単', '回収率', '馬券用語'],
 };
 
 const categories = ['基本', '馬券', '競馬場', 'レース', '血統', 'その他'] as const;

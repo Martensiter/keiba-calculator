@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 
-export const alt = '競馬オッズ計算ツール | 馬券点数・回収率・収支を簡単シミュレーション';
+export const alt = '競馬オッズ計算ツール | 買い目計算・馬券シミュレーション・回収率を無料で';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 

@@ -3,8 +3,9 @@ import { BreadcrumbJsonLd, HowToJsonLd, ArticleJsonLd } from '@/components/seo/J
 import { AdSlot } from '@/components/ads/AdSlot';
 
 export const metadata: Metadata = {
-  title: 'はじめての方へ | 競馬初心者向けガイド',
-  description: '競馬初心者の方へ。馬券の仕組み・買い方・計算ツールの使い方をゼロからわかりやすく解説。初めての馬券購入を安心してサポートします。',
+  title: 'はじめての方へ | 競馬初心者向け・馬券シミュレーション入門',
+  description: '競馬初心者の方へ。馬券の仕組み・買い方・オッズ計算の基礎をゼロから解説。買い目計算ツールの使い方で馬券シミュレーションも可能。初めての馬券購入を安心してサポートします。',
+  keywords: ['競馬初心者', '馬券の買い方', '買い目計算', '馬券シミュレーション', 'オッズ計算'],
   alternates: { canonical: '/beginners' },
 };
 

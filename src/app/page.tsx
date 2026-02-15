@@ -236,10 +236,9 @@ export default function CalculatorPage() {
       <div className="space-y-6">
         {/* タイトル・説明 */}
         <section>
-          <h1 className="text-2xl font-bold text-(--color-text-primary) mb-2">競馬オッズ計算ツール</h1>
+          <h1 className="text-2xl font-bold text-(--color-text-primary) mb-2">競馬オッズ計算ツール・買い目計算</h1>
           <p className="text-sm text-(--color-text-secondary) mb-2">
-            馬券の点数・合計金額・回収率をリアルタイムで計算。BOX・ながし・フォーメーションに対応。
-            即PATデータ取り込み・JRA公式オッズ転記にも対応しています。
+            競馬の買い目計算・オッズシミュレーションができる無料ツールです。馬券の点数・合計金額・回収率をリアルタイムで計算。馬連・馬単・ワイド・3連複・3連単のオッズ計算に対応。JRA公式サイトからのオッズ転記・即PATデータ取り込みで簡単にオッズ計算。BOX・ながし・フォーメーションの点数も自動計算します。
           </p>
           <p className="text-xs text-(--color-text-muted) italic">
             ※ 当サイトは馬券の購入を推奨しません。馬券購入は自己責任で、20歳以上の方に限られます。

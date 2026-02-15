@@ -3,8 +3,9 @@ import { BreadcrumbJsonLd, HowToJsonLd } from '@/components/seo/JsonLd';
 import { AdSlot } from '@/components/ads/AdSlot';
 
 export const metadata: Metadata = {
-  title: '馬券の買い方ガイド | 初心者向け競馬馬券入門',
-  description: '競馬初心者向けに馬券の種類・買い方・コツを解説。単勝・複勝・馬連・馬単・ワイド・3連複・3連単の特徴と期待値を分かりやすく説明します。',
+  title: '馬券の買い方ガイド | オッズ計算・買い目計算の基礎',
+  description: '競馬の馬券種類・買い方・オッズ計算の基礎を解説。単勝・複勝・馬連・馬単・ワイド・3連複・3連単の特徴と買い目計算のコツ。JRAオッズの見方も分かりやすく説明。',
+  keywords: ['馬券の買い方', 'オッズ計算', '買い目計算', '馬連', '馬単', 'ワイド', '3連複', '3連単', 'JRAオッズ', '競馬初心者'],
 };
 
 const betGuides = [
@@ -94,10 +95,10 @@ export default function GuidePage() {
 
       <article className="space-y-8">
         <header>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">馬券の買い方ガイド</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">馬券の買い方ガイド｜オッズ計算・買い目計算の基礎</h1>
           <p className="text-gray-600">
-            競馬初心者の方向けに、馬券の種類と買い方のコツを分かりやすく解説します。
-            各馬券種の特徴を理解して、自分に合った買い方を見つけましょう。
+            競馬初心者の方向けに、馬券の種類・買い方・オッズ計算の基礎を解説します。
+            買い目計算に役立つ各馬券種の特徴（馬連・馬単・ワイド・3連複・3連単）とJRAオッズの見方を理解し、馬券シミュレーションに活かしましょう。
           </p>
         </header>
 
